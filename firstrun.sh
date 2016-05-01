@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export HOME="/root"
+service nginx stop
 
 if [[ $(cat /etc/timezone) != $TZ ]] ; then
   echo "Setting the correct time"
@@ -38,15 +39,6 @@ else
   echo "Using existing jail.local"
 fi
 
-if [ ! -d "/config/nginx/fail2ban-filters" ]; then
-  echo "Copying default fail2ban filters"
-  cp -R /defaults/fail2ban-filters /config/nginx/
-else
-  echo "Using existing fail2ban filters"
-fi
-
-cp /config/nginx/jail.local /etc/fail2ban/jail.local
-cp /config/nginx/fail2ban-filters/* /etc/fail2ban/filter.d/
 rm -f /etc/nginx/nginx.conf
 ln -s /config/nginx/nginx.conf /etc/nginx/nginx.conf
 
@@ -78,8 +70,3 @@ fi
 chown -R nobody:users /config
 /defaults/letsencrypt.sh
 service nginx start
-if [ -S "/var/run/fail2ban/fail2ban.sock" ]; then
-  echo "fail2ban.sock found, deleting"
-  rm /var/run/fail2ban/fail2ban.sock
-fi
-service fail2ban start

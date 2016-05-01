@@ -6,7 +6,7 @@ RUN echo "America/Sao_Paulo" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
 ### UPDATE DEBIAN
-RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y && apt-get autoremove -y && apt-get install -y locales git vim gzip openssl fail2ban
+RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y && apt-get autoremove -y && apt-get install -y locales git vim gzip openssl
 
 ### CONFIGURE LOCALES
 RUN echo "LANGUAGE=pt_BR.UTF-8" >> /etc/environment
@@ -36,8 +36,8 @@ RUN apt-get install cron -y
 RUN chmod +x /etc/my_init.d/firstrun.sh && \
 chmod +x /defaults/letsencrypt.sh && \
 chmod +x /defaults/letsencrypt-auto && \
-chmod +x /etc/service/*/run && \
 crontab /defaults/letsencryptcron.conf && \
-/defaults/letsencrypt-auto -h && \
-update-rc.d -f nginx remove && \
-update-rc.d -f fail2ban remove
+/defaults/letsencrypt-auto -h
+
+CMD [ "bash" ]
+ENTRYPOINT ["/etc/my_init.d/firstrun.sh"]
